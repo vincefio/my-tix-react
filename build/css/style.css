@@ -1,0 +1,120 @@
+form.signup,
+form.login {
+  margin-top: 50px;
+}
+
+body {
+  background: #eee !important;    
+}
+
+.wrapper {    
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+.register-link{
+padding-top: 20px;
+margin-bottom: 0;
+}
+
+.form-signin {
+  max-width: 380px;
+  padding: 15px 35px 20px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 1px solid rgba(0,0,0,0.1);  
+}
+
+.form-signin-heading,
+.checkbox {
+  margin-bottom: 30px;
+}
+
+.checkbox {
+  font-weight: normal;
+}
+
+.form-control {
+  position: relative;
+  font-size: 16px;
+  height: auto;
+  padding: 10px;
+    @include box-sizing(border-box);
+
+    &:focus {
+      z-index: 2;
+    }
+}
+
+input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+input[type="password"] {
+  margin-bottom: 20px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+button.submit {
+  float: right;
+}
+
+form#cms {
+  margin-top: 50px;
+}
+
+#cms textarea {
+  resize: none;
+}
+
+.panel-heading button.delete,
+button.edit {
+  float: right;
+  margin: 5px;
+}
+
+.user-container {
+  margin-top: 50px;
+  background-color: lightblue;
+
+}
+
+.user-list {
+  margin-top: 25px;
+}
+
+.board-container {
+  margin-top: 30px;
+  background-color: lightblue;
+
+}
+
+.board {
+  margin-top: 30px;
+  background-color: lightblue;
+
+}
+
+#user-name {
+  width: 100%;
+  height: 35px;
+  margin-top: 5px;
+}
+
+.top-30 {
+  margin-top: 30px;
+}

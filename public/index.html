@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>MyTix</title>
+
+		<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Abel|Alegreya+Sans|Alegreya+Sans+SC|Alfa+Slab+One|Anton|Audiowide|Baloo+Bhaina|Baloo+Paaji|Cinzel|Days+One|Fjalla+One|Fredoka+One|Fugaz+One|Marcellus|Old+Standard+TT|Raleway|Righteous|Roboto|Roboto+Condensed|Slabo+27px|Vollkorn" rel="stylesheet">
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+
+<body>
+	<noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+    <div id="dataArea" style="margin-left: 34.5%; padding:5px; padding-left:0px; margin-top:20px; margin-bottom:20px; width: 64.5%">
+    	<div class="whiteText titles" id="dataBkgd" style="font-size:22px; margin:20px; border-bottom: 1px solid #FFF; color:#BA9400; font-weight:bold">Detailed Event Data</div>
+    	<form id="dataForm" style="margin-left: 20px; margin-bottom: 20px">
+	    	<input type="text" placeholder="Enter Event Name" id="inputForData">
+				<button id="eventGraph" style="color:#333">Event Data</button>
+			</form>
+    </div>
+	<!-- Graph generation -->
+		<p align="center">
+    <!--This draws the Canvas on the webpage -->
+      <canvas id="mycanvas"></canvas>
+    </p>
+     <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script>
+<script>
+  // Canvas script
+
+	// Bar Graph
+	$(document).on('click', '#eventGraph', function(event){
+		event.preventDefault();
+		var postDbEvent = {
+			// Populated object keys
+			ticketType: [],
+			totalTickets: 0,
+			totalTicketsPerType: [],
+			pricePerType: [],
+			totalBoughtTickets: 0,
+			boughtTicketsPerType: [],
+			totalRevenue: 0,
+			totalRevenuePerType:[],
+		}
+		var eventSearch = $('#inputForData').val();
+		$('#inputForData').val('');
+		// Grab the user's Event name from input box and run ajax call to get it from the database
+		$.ajax({
+		url: "/api/eventSearch/" + eventSearch,
+		method:"GET"
+}).done(function(result){
+			// Begin to populate event object information in order to loop later
+		  for(var i in result[0].Option){
+		  	postDbEvent.ticketType.push(result[0].Option[i].optionName);
+		  	// Provide a placeholder per ticket type in aligned arrays to increment later
+		  	postDbEvent.boughtTicketsPerType.push(0);
+		  	postDbEvent.totalRevenuePerType.push(0);
+		  	postDbEvent.totalTickets += result[0].Option[i].optionQuantity;
+		  	postDbEvent.totalTicketsPerType.push(result[0].Option[i].optionQuantity);
+		  	postDbEvent.pricePerType.push(result[0].Option[i].optionPrice);
+		  }
+		  // Populate with bought quantities
+		  for(var key in postDbEvent.ticketType){
+		  	for(var i in result[0].Customer){
+		  		if(postDbEvent.ticketType[key] == result[0].Customer[i].option){
+		  			postDbEvent.boughtTicketsPerType[key] += result[0].Customer[i].quantitySelect;
+		  			postDbEvent.totalBoughtTickets += result[0].Customer[i].quantitySelect;
+		  		}
+		  	}
+		  }
+		  // Get Total Revenue (Loop over object)
+		  // Loop over ticket types to get bought and total Per ticket type
+		  for(var key in postDbEvent.ticketType){
+		  	postDbEvent.totalRevenuePerType[key] += postDbEvent.pricePerType[key] * postDbEvent.boughtTicketsPerType[key];
+		  	postDbEvent.totalRevenue += postDbEvent.totalRevenuePerType[key];
+		  }
+	console.log(postDbEvent);
+
+	var sketchProc = function(processingInstance) {
+  with (processingInstance) {
+    size(1000, 600);
+    frameRate(30);
+
+	background(0, 0, 0);
+	var x = 10;
+	// var z = revenue.reduce(function(a, b) {
+	// 	return Math.max(a, b);
+	// });
+	// Grab maximum revenue value for setting y-axis Max
+	var z = postDbEvent.totalRevenuePerType.reduce(function(a, b) {
+		return Math.max(a, b);
+	});
+	var maxRev = z;
+	var labelRev = maxRev;
+	// Evenly spaced y intervals
+	var revYSpacing = maxRev/10;
+
+	var spacing = 80;
+	width = 25;
+	// Graph Title
+	textSize(20);
+	fill(255, 255, 255);
+	ctx.font="bold 30px Arial";
+  text(result[0].Name  + " Revenue", 280, 50);
+  // Y label
+  fill(255, 255, 255);
+  textSize(12);
+  fill(255, 255, 255);
+	text("$", 10, 300);
+	// Y and X edge lines
+	fill(255, 255, 255);
+	stroke(255, 255, 255);
+	line(80, 80, 80, 540);
+	line(80, 540, 700, 540);
+	// Generate yLabel array, First 2 are empty for spacing from top
+	var yLabels = ["", ""];
+	for(var i = 0; i<10; i++){
+		yLabels.push(labelRev);
+		labelRev -= revYSpacing;
+	}
+	yLabels.push(0);
+	var y = 0;
+	// Draw the y axis labels
+	for(var i in yLabels){
+		text(yLabels[i], 45, y);
+		y+=45;
+	}
+
+	// Scales bar height to canvas window based on max revenue.
+	// Generate bar heights per ticket type
+	// Label the x-axis with items array
+	ctx.font="bold 14px Arial";
+	text("Ticket Type", canvas.width/2 - 140, 585);
+	ctx.font="12px Arial";
+	for(var key in postDbEvent.totalRevenuePerType){
+		if(postDbEvent.totalRevenuePerType[key] === maxRev){
+			var height = 450;
+			fill(0, 26, 70);
+			rect(x + spacing, 540-height, x+width, height);
+			fill(250, 250, 250);
+			text(postDbEvent.ticketType[key], x + spacing, 560);
+
+			spacing+=150;
+		}
+		else{
+			var height = postDbEvent.totalRevenuePerType[key]/maxRev * 450;
+			fill(0, 26, 70);
+			rect(x + spacing, 540-height, x+width, height);
+			fill(250, 250, 250);
+			text(postDbEvent.ticketType[key], x + spacing, 560);
+
+			spacing+=150;
+		}
+	}
+
+	// Arc Graph
+	var x2 = canvas.width / 1.25;
+  var y2 = canvas.height / 3.5;
+  var radius = 75;
+  var startAngle = (0 + 1.5) * Math.PI;
+  var endAngle = (2 + 1.5) * Math.PI;
+  var counterClockwise = false;
+  ctx.beginPath();
+  ctx.arc(x2, y2, radius, startAngle, endAngle, counterClockwise);
+  ctx.lineWidth = 15;
+  // line color
+  ctx.strokeStyle = 'white';
+  ctx.stroke();
+
+  // Arc data
+  var EventPercent = postDbEvent.totalBoughtTickets / postDbEvent.totalTickets;
+  var EventArc = (EventPercent * 2 + 1.5) * Math.PI;
+  ctx.beginPath();
+  ctx.arc(x2, y2, radius, startAngle, EventArc, counterClockwise);
+  ctx.lineWidth = 15;
+  // Arc color
+  ctx.strokeStyle = ('green');
+  ctx.stroke();
+
+  // Arc Text Labels
+  ctx.font="20px Arial";
+  text("% Tickets Sold", (canvas.width/1.60 + 100), (canvas.height/8))
+  ctx.font="30px Arial";
+  text(EventPercent * 100, (canvas.width/1.28 - 20), (canvas.height/3.5 + 10))
+  ctx.font="20px Arial";
+  text("Tickets Remaining", (canvas.width/1.60 + 100), (canvas.height/2));
+  ctx.strokeStyle = ('white');
+  ctx.lineWidth = 2;
+  line(720, 305, 950, 305);
+  var lastLabels = 330;
+  var dropHeight;
+  for(var key in postDbEvent.ticketType){
+  	var remaining = postDbEvent.totalTicketsPerType[key] - postDbEvent.boughtTicketsPerType[key];
+  	text(remaining + ' / ' + postDbEvent.totalTicketsPerType[key] + '   ' + postDbEvent.ticketType[key] + ' tickets left', (canvas.width/1.60 + 100), lastLabels);
+  	lastLabels+=30;
+  }
+
+
+  line(720, 510, 950, 510);
+  ctx.font="20px Arial";
+  text("Total Revenue", (canvas.width/1.60 + 100), (canvas.height/1.2));
+  var total = 0;
+	ctx.font="30px Arial";
+	text('$ ' + postDbEvent.totalRevenue, (canvas.width/1.60 + 100), (canvas.height/1.1))
+  $('#mycanvas').css('border', "solid 2px #4A6EA9");
+  }};
+
+  // Get the canvas that Processing-js will use
+  var canvas = document.getElementById("mycanvas");
+	var ctx = canvas.getContext("2d");
+  // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
+
+  var processingInstance = new Processing(canvas, sketchProc);
+ 		});
+	})
+ </script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+#header{
+	padding: 30px 0;
+	padding-top: 0;
+	/*border: 1px solid #000000;*/
+	text-align: center;
+	color: #333333;
+	font-size: 2em;
+/*	background-color: #BA9400;
+*/	margin-bottom: 10px;
+}
+
+h1{   
+	font-weight: bold;
+	font-size: 1.5em;
+	padding-top: 5px;
+	margin-top: 5px; 
+}
+body{
+	background-color: #f8f1e5;
+}
+
+
+/*li{
+	padding: 60px 20px;
+	border: 1px solid #000000;
+	background-color: lightblue; 
+	text-align: center;
+	margin: 0;
+	list-style: none;
+}*/
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+	background-color: #001A46;
+}
+
+.nav>li>a:focus, .nav>li>a:hover{
+	background-color: #001A46;
+	color: #f8f1e5 ;
+}
+
+a{
+
+color: #f8f1e5;
+}
+
+.titles{
+	color: #BA9400;
+	font-weight: bold;
+	font-size: 1em;
+}
+
+#nav{
+		background-color: #5E5E5E;
+		text-align: center;
+
+		/*margin-top: 50px;*/
+
+}
+
+.eventsList{
+	text-align: center;
+	background-color: #f8f1e5;
+	border: none;
+	margin: 5px 0;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	border-radius: 25px;
+
+	}
+
+.listItem{
+/*	border-bottom: 1px solid #333333;
+*/margin-right: 10px;
+	margin-left: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	
+}
+.list-group-item:first-child{
+	border-radius: 25px;
+}
+.list-group-item:last-child{
+	border-radius: 25px; 
+}
+
+
+.reactComponents{
+
+/*	height: 440px;
+	width: 100%;*/
+	background-color: #5E5E5E;
+	padding-top: 0;
+	padding-right: 18px;
+	padding-left: 18px;
+
+/*	border-radius: 5%;*/
+}
+
+.homeButtons{
+	background-color: #f8f1e5;
+
+/*	border: none;*/
+
+}
+
+.endInput{
+margin-left: 15px;
+}
+
+.labels{
+	font-size: 1.2em;
+	margin-right: 5px;
+	margin-bottom: 10px;
+	margin-top: 20px; 
+}
+
+.createForm{
+	padding-bottom: 40px;
+}
+
+.options{
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	border-radius: 25px;
+	text-align: center;
+	background-color: #f8f1e5;
+	border: none;
+	margin-top: 10px;
+
+}
+
+/*			  	<ListGroup>
+							  		<ListGroupItem>
+							  			<h4>Option Name</h4>
+							  			<p>Price:</p>
+							  			<p>Quantity:</p>
+							  			<p>Description</p>
+							  		</ListGroupItem>
+							  	</ListGroup> */

@@ -1,1 +1,3 @@
-# my-tix-react
+# myTix
+
+Work in Progress
